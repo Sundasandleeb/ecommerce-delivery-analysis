@@ -1,0 +1,46 @@
+## Data and cleaning
+
+- Olist e-commerce data: 99,441 orders, 8 tables.
+- customer_id is one per order, so repeat-customer analysis must use customer_unique_id.
+- 551 orders had duplicate reviews. I kept the latest review per order, which brought the row count back to exactly 99,441.
+- 2,965 orders have no delivery date , excluded them from delivery analysis.
+
+## Delivery speed and reviews
+
+- Correlation between delivery days and review score is -0.30. The average score falls from 4.39 (0-3 days) to 3.83 (10+ days), with the sharpest drop after 10 days.
+- 46% of delivered orders take more than 10 days.
+
+## Sellers
+
+- Of 2,970 sellers, only 681 have 30+ orders. Averages for sellers with 1 to 5 orders are noise.
+- Among those 681, the seller-level correlation is -0.43, stronger than the order-level -0.30 because averaging removes noise.
+- Only 14 sellers average over 20 days, and they handle 2.3% of orders. A seller blacklist would not fix the platform.
+
+## Geography
+
+- Delivery time depends on location: SP averages 8.3 days, the remote northern states 20 to 28.
+- Slow does not mean low-rated. AP and AM wait about 27 days but score 4.1 to 4.3.
+
+## Late versus promised (the main finding)
+
+- 7.9% of orders arrive after the promised date.
+- Late orders average 2.55 stars against 4.21 for on-time ones, a 1.66-star gap. This is much larger than the 0.56-star gap between fast and slow delivery.
+- Customers judge delivery against the promise, not against a fixed number of days.
+
+## Where the late orders are
+
+- RJ has 13.0% late against 5.8% for SP and 5.5% for MG. It has 1,835 late orders, second only to SP’s 2,679, and is about 1 in 5 of all late orders on the platform.
+- If RJ matched SP’s late rate, it would have about 1,000 fewer late orders.
+- RR is the slowest state, but it has only 5 late orders out of 46.
+
+## Why RJ is late
+
+- Seller handling is 2.7 to 2.9 days in every major state, and RJ is only 0.17 days slower than SP.
+- RJ’s extra delay vs SP (about 6.4 days) is about 97% carrier transit (11.3 days vs 5.1).
+- Transit (carrier and route) is therefore the stage to investigate, not the sellers.
+
+## Limits to mention in the case study
+
+- The data doesn’t name carriers, so “transit” covers the carrier, route and local conditions.
+- Late orders are correlated with low scores, but we haven’t proven they cause them. Damaged or wrong items could also be involved.
+- Counts are per order item, so multi-item orders are counted more than once. Adding delivery_review_data = delivery_review_data.drop_duplicates(subset="order_id") after the dropna line fixes this. The conclusions won’t change, but the exact numbers will.
